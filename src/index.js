@@ -12,6 +12,9 @@ const METHODS = [
   'PATCH'
 ]
 
+const X_INTEGRATION = 'x-amazon-apigateway-integration'
+const ALLOW_HEADERS = 'method.response.header.Access-Control-Allow-Headers'
+
 class BinarySupport {
   constructor(serverless, options) {
     this.options = options || {};
@@ -91,20 +94,24 @@ class BinarySupport {
       let pathConf = swaggerInput.paths[path]
       // TODO: check methods against serveress.yml
       let methods = METHODS
+      let defaultOptionsBlock = genOptionsBlock({ methods })
       if (pathConf.options) {
         this.log(`updating existing OPTIONS integration for path: ${path}`);
-        let integrationOpts = pathConf.options['x-amazon-apigateway-integration']
+        let integrationOpts = pathConf.options[X_INTEGRATION]
         if (integrationOpts) {
           if (!integrationOpts.contentHandling) {
             // THE SKELETON KEY
             integrationOpts.contentHandling = 'CONVERT_TO_TEXT'
           }
+
+          integrationOpts.responses.default.responseParameters[ALLOW_HEADERS]
+            = defaultOptionsBlock[X_INTEGRATION].responses.default.responseParameters[ALLOW_HEADERS]
         } else {
-          pathConf.options['x-amazon-apigateway-integration'] = genOptionsBlock({ methods })['x-amazon-apigateway-integration']
+          pathConf.options[X_INTEGRATION] = defaultOptionsBlock[X_INTEGRATION]
         }
       } else {
         this.log(`setting default OPTIONS integration for path ${path}`)
-        pathConf.options = genOptionsBlock({ methods })
+        pathConf.options = defaultOptionsBlock
       }
     }
 
