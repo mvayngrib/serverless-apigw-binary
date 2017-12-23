@@ -28,7 +28,7 @@ module.exports = ({ methods }) => ({
         "statusCode": 204,
         "responseParameters": {
           "method.response.header.Access-Control-Allow-Methods": `'${methods}'`,
-          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,x-tradle-sig,cache'",
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Content-Length,Content-Encoding,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,x-tradle-sig,cache'",
           "method.response.header.Access-Control-Allow-Origin": "'*'"
         }
       }
